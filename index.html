@@ -342,8 +342,8 @@
 <body>
 
 <header>
-    <h1>🐾 Лавка предметов CatWar</h1>
-    <p>Выберите нужные предметы, соберите корзину и скопируйте готовый текст заказа</p>
+    <h1>🐾 Лавка втшек CatWar</h1>
+    <p>Выберите нужные предметы, соберите корзину и скопируйте готовый текст заказа!</p>
 </header>
 
 <div class="container">
@@ -371,7 +371,7 @@
             <textarea id="orderText" class="order-textarea" readonly placeholder="Добавьте товары, чтобы сформировать текст заказа..."></textarea>
             <button id="copyBtn" class="copy-btn" disabled>Скопировать заказ</button>
             <div id="copyStatus" class="copy-status"></div>
-                <a href="https://catwar.su/cat1690309" target="_blank" class="profile-link" style="display: block; text-align: center; margin-top: 8px;">Отправить ЛС в CatWar🐱↗</a>
+                <a href="https://catwar.su/cat1690309" target="_blank" class="profile-link" style="display: block; text-align: center; margin-top: 8px; color: #ffffff;">Отправить ЛС в CatWar🐱↗</a>
         </div>
     </aside>
 </div>
@@ -693,7 +693,7 @@
         });
     }
 
-    function renderCatalog() {
+     function renderCatalog() {
         catalogGrid.innerHTML = "";
         const filtered = ITEMS.filter(item => {
             const matchCat = activeCategory === "Все" || item.category === activeCategory;
@@ -702,23 +702,17 @@
         });
 
         filtered.forEach(item => {
-            const inCart = cart[item.id] || 0;
-            const available = item.stock - inCart;
-
             const card = document.createElement("div");
             card.className = "item-card";
             card.innerHTML = `
                 <div>
                     <img src="${item.image}" alt="${item.title}" class="item-img" onerror="this.style.opacity='0.3'">
                     <div class="item-category">${item.category}</div>
-                    <div class="item-title">${item.title}</div>
-                    <div class="item-stock ${available > 0 ? 'in-stock' : 'out-stock'}">
-                        ${available > 0 ? `В наличии: ${available} шт.` : 'Нет в наличии'}
-                    </div>
+                    <div class="item-title" style="margin-bottom: 12px;">${item.title}</div>
                 </div>
                 <div class="item-footer">
                     <span class="item-price">${item.price} ${CURRENCY}</span>
-                    <button class="add-btn" ${available <= 0 ? 'disabled' : ''} onclick="addToCart(${item.id})">
+                    <button class="add-btn" onclick="addToCart(${item.id})">
                         + В корзину
                     </button>
                 </div>
@@ -730,11 +724,8 @@
     window.addToCart = function(id) {
         const item = ITEMS.find(i => i.id === id);
         if (!item) return;
-        const currentQty = cart[id] || 0;
-        if (currentQty < item.stock) {
-            cart[id] = currentQty + 1;
-            updateAll();
-        }
+        cart[id] = (cart[id] || 0) + 1;
+        updateAll();
     };
 
     window.changeQty = function(id, delta) {
@@ -743,7 +734,7 @@
         const newQty = (cart[id] || 0) + delta;
         if (newQty <= 0) {
             delete cart[id];
-        } else if (newQty <= item.stock) {
+        } else {
             cart[id] = newQty;
         }
         updateAll();
@@ -779,7 +770,7 @@
                 <div class="qty-controls">
                     <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
                     <span>${qty}</span>
-                    <button class="qty-btn" onclick="changeQty(${item.id}, 1)" ${qty >= item.stock ? 'disabled' : ''}>+</button>
+                    <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
                 </div>
             `;
             cartItemsEl.appendChild(row);
