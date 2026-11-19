@@ -347,10 +347,9 @@
 </header>
 
 <div class="container">
-    <main>
+   <main>
         <div class="controls">
             <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию...">
-            <div id="categoryFilters" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
         </div>
         <div id="catalogGrid" class="catalog-grid"></div>
     </main>
@@ -665,41 +664,23 @@
     ];
 
     let cart = {};
-    let activeCategory = "Все";
     let searchQuery = "";
 
     const catalogGrid = document.getElementById("catalogGrid");
-    const categoryFilters = document.getElementById("categoryFilters");
     const searchInput = document.getElementById("searchInput");
     const cartItemsEl = document.getElementById("cartItems");
     const totalPriceEl = document.getElementById("totalPrice");
     const orderTextEl = document.getElementById("orderText");
     const copyBtn = document.getElementById("copyBtn");
     const copyStatus = document.getElementById("copyStatus");
-
-    function renderCategories() {
-        const categories = ["Все", ...new Set(ITEMS.map(item => item.category))];
-        categoryFilters.innerHTML = "";
-        categories.forEach(cat => {
-            const btn = document.createElement("button");
-            btn.className = "filter-btn" + (cat === activeCategory ? " active" : "");
-            btn.textContent = cat;
-            btn.onclick = () => {
-                activeCategory = cat;
-                renderCategories();
-                renderCatalog();
-            };
-            categoryFilters.appendChild(btn);
-        });
+    
     }
 
-     function renderCatalog() {
+         function renderCatalog() {
         catalogGrid.innerHTML = "";
-        const filtered = ITEMS.filter(item => {
-            const matchCat = activeCategory === "Все" || item.category === activeCategory;
-            const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
-            return matchCat && matchSearch;
-        });
+        const filtered = ITEMS.filter(item =>
+            item.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
         filtered.forEach(item => {
             const card = document.createElement("div");
@@ -707,7 +688,6 @@
             card.innerHTML = `
                 <div>
                     <img src="${item.image}" alt="${item.title}" class="item-img" onerror="this.style.opacity='0.3'">
-                    <div class="item-category">${item.category}</div>
                     <div class="item-title" style="margin-bottom: 12px;">${item.title}</div>
                 </div>
                 <div class="item-footer">
