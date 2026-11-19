@@ -382,118 +382,161 @@
             category: "втшка",
             price: 30,
             stock: 200,
-            image: "images/alpaka.png.png"
+            image: "images/alpaka.png"
         }
     ];
 
     let cart = {};
     let activeCategory = "Все";
-let searchQuery = "";
-const catalogGrid = document.getElementById("catalogGrid");
-const categoryFilters = document.getElementById("categoryFilters");
-const searchInput = document.getElementById("searchInput");
-const cartItemsEl = document.getElementById("cartItems");
-const totalPriceEl = document.getElementById("totalPrice");
-const orderTextEl = document.getElementById("orderText");
-const copyBtn = document.getElementById("copyBtn");
-const copyStatus = document.getElementById("copyStatus");
-function renderCategories() {
-const categories = ["Все", ...new Set(ITEMS.map(item => item.category))];
-categoryFilters.innerHTML = "";
-categories.forEach(cat => {
-const btn = document.createElement("button");
-btn.className = "filter-btn" + (cat === activeCategory ? " active" : "");
-btn.textContent = cat;
-btn.onclick = () => {
-activeCategory = cat;
-renderCategories();
-renderCatalog();
-};
-categoryFilters.appendChild(btn);
-});
-}
-function renderCatalog() {
-catalogGrid.innerHTML = "";
-const filtered = ITEMS.filter(item => {
-const matchCat = activeCategory === "Все" || item.category === activeCategory;
-const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
-return matchCat && matchSearch;
-});
-filtered.forEach(item => {
-const inCart = cart[item.id] || 0;
-const available = item.stock - inCart;
-const card = document.createElement("div");
-card.className = "item-card";
-card.innerHTML = <div> <img src="${item.image}" alt="${item.title}" class="item-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://w3.org width=%22100%22 height=%22100%22><text x=%2250%%22 y=%2255%%22 font-size=%2240%22 text-anchor=%22middle%22>🐾</text></svg>'"> <div class="item-category">${item.category}</div> <div class="item-title">${item.title}</div> <div class="item-stock ${available > 0 ? 'in-stock' : 'out-stock'}"> ${available > 0 ?В наличии: ${available} шт.: 'Нет в наличии'} </div> </div> <div class="item-footer"> <span class="item-price">${item.price} ${CURRENCY}</span> <button class="add-btn" ${available <= 0 ? 'disabled' : ''} onclick="addToCart(${item.id})"> + В корзину </button> </div>;
-catalogGrid.appendChild(card);
-});
-}
-window.addToCart = function(id) {
-const item = ITEMS.find(i => i.id === id);
-if (!item) return;
-const currentQty = cart[id] || 0;
-if (currentQty < item.stock) {
-cart[id] = currentQty + 1;
-updateAll();
-}
-};
-window.changeQty = function(id, delta) {
-const item = ITEMS.find(i => i.id === id);
-if (!item) return;
-const newQty = (cart[id] || 0) + delta;
-if (newQty <= 0) {
-delete cart[id];
-} else if (newQty <= item.stock) {
-cart[id] = newQty;
-}
-updateAll();
-};
-function renderCart() {
-const entries = Object.entries(cart);
-if (entries.length === 0) {
-cartItemsEl.innerHTML = 'Корзина пока пуста';
-totalPriceEl.textContent = 0 ${CURRENCY};
-orderTextEl.value = "";
-copyBtn.disabled = true;
-return;
-}
-cartItemsEl.innerHTML = "";
-let total = 0;
-let orderLines = ["Привет! Хочу оформить заказ из лавки:"];
-entries.forEach(([idStr, qty]) => {
-const item = ITEMS.find(i => i.id === Number(idStr));
-if (!item) return;
-const sum = item.price * qty;
-total += sum;
-const row = document.createElement("div");
-row.className = "cart-row";
-row.innerHTML = <div class="cart-row-info"> <div class="cart-row-title">${item.title}</div> <div class="cart-row-sub">${item.price} × ${qty} = ${sum} ${CURRENCY}</div> </div> <div class="qty-controls"> <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button> <span>${qty}</span> <button class="qty-btn" onclick="changeQty(${item.id}, 1)" ${qty >= item.stock ? 'disabled' : ''}>+</button> </div>;
-cartItemsEl.appendChild(row);
-orderLines.push(• ${item.title} — ${qty} шт. (${sum} ${CURRENCY}));
-});
-orderLines.push(\nИтого: ${total} ${CURRENCY});
-totalPriceEl.textContent = ${total} ${CURRENCY};
-orderTextEl.value = orderLines.join("\n");
-copyBtn.disabled = false;
-}
-function updateAll() {
-renderCatalog();
-renderCart();
-copyStatus.textContent = "";
-}
-searchInput.addEventListener("input", (e) => {
-searchQuery = e.target.value;
-renderCatalog();
-});
-copyBtn.addEventListener("click", () => {
-navigator.clipboard.writeText(orderTextEl.value).then(() => {
-copyStatus.textContent = "✅ Текст заказа скопирован! Отправьте его мне.";
-}).catch(() => {
-orderTextEl.select();
-document.execCommand("copy");
-copyStatus.textContent = "✅ Текст скопирован!";
-});
-});
-renderCategories();
-renderCatalog();
-</script> </body> </html>
+    let searchQuery = "";
+
+    const catalogGrid = document.getElementById("catalogGrid");
+    const categoryFilters = document.getElementById("categoryFilters");
+    const searchInput = document.getElementById("searchInput");
+    const cartItemsEl = document.getElementById("cartItems");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const orderTextEl = document.getElementById("orderText");
+    const copyBtn = document.getElementById("copyBtn");
+    const copyStatus = document.getElementById("copyStatus");
+
+    function renderCategories() {
+        const categories = ["Все", ...new Set(ITEMS.map(item => item.category))];
+        categoryFilters.innerHTML = "";
+        categories.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = "filter-btn" + (cat === activeCategory ? " active" : "");
+            btn.textContent = cat;
+            btn.onclick = () => {
+                activeCategory = cat;
+                renderCategories();
+                renderCatalog();
+            };
+            categoryFilters.appendChild(btn);
+        });
+    }
+
+    function renderCatalog() {
+        catalogGrid.innerHTML = "";
+        const filtered = ITEMS.filter(item => {
+            const matchCat = activeCategory === "Все" || item.category === activeCategory;
+            const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
+            return matchCat && matchSearch;
+        });
+
+        filtered.forEach(item => {
+            const inCart = cart[item.id] || 0;
+            const available = item.stock - inCart;
+
+            const card = document.createElement("div");
+            card.className = "item-card";
+            card.innerHTML = `
+                <div>
+                    <img src="${item.image}" alt="${item.title}" class="item-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://w3.org width=%22100%22 height=%22100%22><text x=%2250%%22 y=%2255%%22 font-size=%2240%22 text-anchor=%22middle%22>🐾</text></svg>'">
+                    <div class="item-category">${item.category}</div>
+                    <div class="item-title">${item.title}</div>
+                    <div class="item-stock ${available > 0 ? 'in-stock' : 'out-stock'}">
+                        ${available > 0 ? `В наличии: ${available} шт.` : 'Нет в наличии'}
+                    </div>
+                </div>
+                <div class="item-footer">
+                    <span class="item-price">${item.price} ${CURRENCY}</span>
+                    <button class="add-btn" ${available <= 0 ? 'disabled' : ''} onclick="addToCart(${item.id})">
+                        + В корзину
+                    </button>
+                </div>
+            `;
+            catalogGrid.appendChild(card);
+        });
+    }
+
+    window.addToCart = function(id) {
+        const item = ITEMS.find(i => i.id === id);
+        if (!item) return;
+        const currentQty = cart[id] || 0;
+        if (currentQty < item.stock) {
+            cart[id] = currentQty + 1;
+            updateAll();
+        }
+    };
+
+    window.changeQty = function(id, delta) {
+        const item = ITEMS.find(i => i.id === id);
+        if (!item) return;
+        const newQty = (cart[id] || 0) + delta;
+        if (newQty <= 0) {
+            delete cart[id];
+        } else if (newQty <= item.stock) {
+            cart[id] = newQty;
+        }
+        updateAll();
+    };
+
+    function renderCart() {
+        const entries = Object.entries(cart);
+        if (entries.length === 0) {
+            cartItemsEl.innerHTML = '<div class="cart-empty">Корзина пока пуста</div>';
+            totalPriceEl.textContent = `0 ${CURRENCY}`;
+            orderTextEl.value = "";
+            copyBtn.disabled = true;
+            return;
+        }
+
+        cartItemsEl.innerHTML = "";
+        let total = 0;
+        let orderLines = ["Привет! Хочу оформить заказ из лавки:"];
+
+        entries.forEach(([idStr, qty]) => {
+            const item = ITEMS.find(i => i.id === Number(idStr));
+            if (!item) return;
+            const sum = item.price * qty;
+            total += sum;
+
+            const row = document.createElement("div");
+            row.className = "cart-row";
+            row.innerHTML = `
+                <div class="cart-row-info">
+                    <div class="cart-row-title">${item.title}</div>
+                    <div class="cart-row-sub">${item.price} × ${qty} = ${sum} ${CURRENCY}</div>
+                </div>
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+                    <span>${qty}</span>
+                    <button class="qty-btn" onclick="changeQty(${item.id}, 1)" ${qty >= item.stock ? 'disabled' : ''}>+</button>
+                </div>
+            `;
+            cartItemsEl.appendChild(row);
+            orderLines.push(`• ${item.title} — ${qty} шт. (${sum} ${CURRENCY})`);
+        });
+
+        orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
+        totalPriceEl.textContent = `${total} ${CURRENCY}`;
+        orderTextEl.value = orderLines.join("\n");
+        copyBtn.disabled = false;
+    }
+
+    function updateAll() {
+        renderCatalog();
+        renderCart();
+        copyStatus.textContent = "";
+    }
+
+    searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value;
+        renderCatalog();
+    });
+
+    copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(orderTextEl.value).then(() => {
+            copyStatus.textContent = "✅ Текст заказа скопирован! Отправьте его мне.";
+        }).catch(() => {
+            orderTextEl.select();
+            document.execCommand("copy");
+            copyStatus.textContent = "✅ Текст скопирован!";
+        });
+    });
+
+    renderCategories();
+    renderCatalog();
+</script>
+</body>
+</html>
