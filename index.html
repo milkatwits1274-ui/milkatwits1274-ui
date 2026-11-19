@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лавка предметов — CatWar</title>
+    <title>Лавка втшек — CatWar</title>
     <style>
         :root {
             --bg-main: #1b2218;
@@ -159,8 +159,9 @@
 
         .item-footer {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
             margin-top: auto;
             padding-top: 10px;
             border-top: 1px solid var(--border);
@@ -170,19 +171,21 @@
             font-weight: 700;
             font-size: 1.05rem;
             color: #e4d4a7;
+            text-align: center;
         }
 
         .add-btn {
+            width: 100%;
             background-color: var(--accent);
             color: #131811;
             border: none;
-            padding: 7px 14px;
+            padding: 8px 14px;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
         }
-
+        
         .add-btn:hover:not(:disabled) {
             background-color: var(--accent-hover);
         }
@@ -368,6 +371,7 @@
             <textarea id="orderText" class="order-textarea" readonly placeholder="Добавьте товары, чтобы сформировать текст заказа..."></textarea>
             <button id="copyBtn" class="copy-btn" disabled>Скопировать заказ</button>
             <div id="copyStatus" class="copy-status"></div>
+                <a href="https://catwar.su/cat1690309" target="_blank" class="profile-link" style="display: block; text-align: center; margin-top: 8px;">Отправить ЛС в CatWar🐱↗</a>
         </div>
     </aside>
 </div>
@@ -379,10 +383,284 @@
         {
             id: 1,
             title: "Альпака",
-            category: "втшка",
             price: 30,
-            stock: 200,
             image: "images/alpaka.png.png"
+        },
+        {
+            id: 2,
+            title: "Розовая лава-лампа",
+            price: 30,
+            image: "images/18569.png"
+        },
+           {
+            id: 3,
+            title: "Голубая лава-дампа",
+            price: 30,
+            image: "images/18568.png"
+        },
+        {
+            id: 4,
+            title: "Моти",
+            price: 30,
+            image: "images/18571.png"
+        },
+           {
+            id: 5,
+            title: "Сет роллов",
+            price: 30,
+            image: "images/18571.png"
+        },
+        {
+            id: 6,
+            title: "Хинкали",
+            price: 30,
+            image: "images/18573.png"
+        },
+         {
+            id: 7,
+            title: "Плагг",
+            price: 30,
+            image: "images/18574.png"
+        },
+        {
+            id: 8,
+            title: "Тикки",
+            price: 30,
+            image: "images/18575.png"
+        },
+           {
+            id: 9,
+            title: "Бабочка",
+            price: 30,
+            image: "images/18576.png"
+        },
+        {
+            id: 10,
+            title: "Морской кролик",
+            price: 30,
+            image: "images/18577.png"
+        },
+           {
+            id: 11,
+            title: "Голубая сахарная вата",
+            price: 30,
+            image: "images/18579.png"
+        },
+        {
+            id: 12,
+            title: "Розовая сахарная вата",
+            price: 30,
+            image: "images/18580.png"
+        },
+         {
+            id: 13,
+            title: "Разноцветная сахарная вата",
+            price: 30,
+            image: "images/18581.png"
+        },
+        {
+            id: 14,
+            title: "Чёрный кот",
+            price: 30,
+            image: "images/18583.png"
+        },
+           {
+            id: 15,
+            title: "Желтый кот-батон",
+            price: 30,
+            image: "images/18584.png"
+        },
+        {
+            id: 16,
+            title: "Розовый кот-батон",
+            price: 30,
+            image: "images/18585.png"
+        },
+           {
+            id: 17,
+            title: "Кото-акула",
+            price: 30,
+            image: "images/18582.png"
+        },
+        {
+            id: 18,
+            title: "Котокуб",
+            price: 30,
+            image: "images/18586.png"
+        },
+         {
+            id: 19,
+            title: "Сиамский кот",
+            price: 30,
+            image: "images/18587.png"
+        },
+        {
+            id: 20,
+            title: "Проклятый рог",
+            price: 30,
+            image: "images/18588.png"
+        },
+           {
+            id: 21,
+            title: "Щупальце",
+            price: 30,
+            image: "images/18589.png"
+        },
+        {
+            id: 22,
+            title: "Добрый кот-перевертыш",
+            price: 30,
+            image: "images/18590.png"
+        },
+           {
+            id: 23,
+            title: "Яблочко в карамели",
+            price: 30,
+            image: "images/apple.png"
+        },
+        {
+            id: 24,
+            title: "Банка со светлячками",
+            price: 30,
+            image: "images/banka.png"
+        },
+         {
+            id: 25,
+            title: "Булочка с корицей",
+            price: 30,
+            image: "images/bulochka.png"
+        },
+        {
+            id: 26,
+            title: "Маршмеллоу",
+            price: 30,
+            image: "images/hz.png"
+        },
+           {
+            id: 27,
+            title: "Ёжик-альбинос",
+            price: 30,
+            image: "images/egik.png.png"
+        },
+        {
+            id: 28,
+            title: "Ужасно вкусное мороженое",
+            price: 30,
+            image: "images/ice.png"
+        },
+           {
+            id: 29,
+            title: "Книга",
+            price: 30,
+            image: "images/kniga.png"
+        },
+        {
+            id: 30,
+            title: "Перстень",
+            price: 30,
+            image: "images/kol.png"
+        },
+         {
+            id: 31,
+            title: "Сладости",
+            price: 30,
+            image: "images/konf.png"
+        },
+        {
+            id: 32,
+            title: "Костёр",
+            price: 30,
+            image: "images/koster.png"
+        },
+           {
+            id: 33,
+            title: "Суп из краба",
+            price: 30,
+            image: "images/krab.png"
+        },
+        {
+            id: 34,
+            title: "Кольцо Лань Чжаня",
+            price: 30,
+            image: "images/lan.png"
+        },
+           {
+            id: 35,
+            title: "Кольцо Вэй Ина",
+            price: 30,
+            image: "images/wei.png"
+        },
+        {
+            id: 36,
+            title: "Бичэнь",
+            price: 30,
+            image: "images/mechg.png"
+        },
+         {
+            id: 37,
+            title: "Суйбянь",
+            price: 30,
+            image: "images/mechk.png"
+        },
+        {
+            id: 38,
+            title: "Моль",
+            price: 30,
+            image: "images/mol.png"
+        },
+           {
+            id: 39,
+            title: "Малиновый бисквит",
+            price: 30,
+            image: "images/nyam.png"
+        },
+        {
+            id: 40,
+            title: "Тыквенный коктейль",
+            price: 30,
+            image: "images/pit.png"
+        },
+           {
+            id: 41,
+            title: "Светильник со звездочками",
+            price: 30,
+            image: "images/shar.png"
+        },
+        {
+            id: 42,
+            title: "Кислый мармелад",
+            price: 30,
+            image: "images/sladosti.png"
+        },
+         {
+            id: 43,
+            title: "Ступка с травами",
+            price: 30,
+            image: "images/stupka.png"
+        },
+        {
+            id: 44,
+            title: "Сладкопахнущая аромасвеча",
+            price: 30,
+            image: "images/svecha.png"
+        },
+           {
+            id: 45,
+            title: "Сладость или гадость",
+            price: 30,
+            image: "images/toko.png"
+        },
+        {
+            id: 46,
+            title: "Кленовый лист",
+            price: 30,
+            image: "images/list.png"
+        },
+           {
+            id: 47,
+            title: "Бутылек исполнения желаний",
+            price: 30,
+            image: "images/wish.png"
         }
     ];
 
