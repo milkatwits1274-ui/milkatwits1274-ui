@@ -65,7 +65,6 @@
             }
         }
 
-        /* Фильтры и поиск */
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -105,7 +104,6 @@
             border-color: var(--accent);
         }
 
-        /* Сетка товаров */
         .catalog-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -195,7 +193,6 @@
             cursor: not-allowed;
         }
 
-        /* Корзина */
         .cart-panel {
             background-color: var(--bg-card);
             border: 1px solid var(--border);
@@ -347,7 +344,6 @@
 </header>
 
 <div class="container">
-    <!-- Левая колонка: Каталог -->
     <main>
         <div class="controls">
             <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию...">
@@ -356,7 +352,6 @@
         <div id="catalogGrid" class="catalog-grid"></div>
     </main>
 
-    <!-- Правая колонка: Корзина -->
     <aside class="cart-panel">
         <h2>🛒 Ваша корзина</h2>
         <div id="cartItems" class="cart-items">
@@ -378,33 +373,21 @@
 </div>
 
 <script>
-    // ==========================================
-    // НАСТРОЙКА ТОВАРОВ (РЕДАКТИРУЙТЕ ЗДЕСЬ)
-    // ==========================================
-const CURRENCY = "кролей"; // Название валюты (например: кролей, мышей, монет)
-const ITEMS = [
-{
-id: 1,
-title: "Альпака",
-category: "втшка",
-price: 30,
-stock: 200,
-image: "images/alpaka.png.png"
-},
-{
-id: 2,
-title: "Ежик",
-category: "втшка",
-price: 30,
-stock: 200,
-image: "images/egik.png.png"
-}
-];
-// ==========================================
-// ЛОГИКА МАГАЗИНА (ДАЛЬШЕ МОЖНО НЕ МЕНЯТЬ)
-// ==========================================
-let cart = {}; // { id: количество }
-let activeCategory = "Все";
+    const CURRENCY = "кролей";
+
+    const ITEMS = [
+        {
+            id: 1,
+            title: "Альпака",
+            category: "втшка",
+            price: 30,
+            stock: 200,
+            image: "images/alpaka.png"
+        }
+    ];
+
+    let cart = {};
+    let activeCategory = "Все";
 let searchQuery = "";
 const catalogGrid = document.getElementById("catalogGrid");
 const categoryFilters = document.getElementById("categoryFilters");
@@ -414,7 +397,6 @@ const totalPriceEl = document.getElementById("totalPrice");
 const orderTextEl = document.getElementById("orderText");
 const copyBtn = document.getElementById("copyBtn");
 const copyStatus = document.getElementById("copyStatus");
-// Создание кнопок категорий
 function renderCategories() {
 const categories = ["Все", ...new Set(ITEMS.map(item => item.category))];
 categoryFilters.innerHTML = "";
@@ -430,7 +412,6 @@ renderCatalog();
 categoryFilters.appendChild(btn);
 });
 }
-// Отрисовка каталога
 function renderCatalog() {
 catalogGrid.innerHTML = "";
 const filtered = ITEMS.filter(item => {
@@ -447,7 +428,6 @@ card.innerHTML = <div> <img src="${item.image}" alt="${item.title}" class="item-
 catalogGrid.appendChild(card);
 });
 }
-// Добавление в корзину
 window.addToCart = function(id) {
 const item = ITEMS.find(i => i.id === id);
 if (!item) return;
@@ -457,7 +437,6 @@ cart[id] = currentQty + 1;
 updateAll();
 }
 };
-// Изменение количества в корзине
 window.changeQty = function(id, delta) {
 const item = ITEMS.find(i => i.id === id);
 if (!item) return;
@@ -469,7 +448,6 @@ cart[id] = newQty;
 }
 updateAll();
 };
-// Отрисовка корзины и текста заказа
 function renderCart() {
 const entries = Object.entries(cart);
 if (entries.length === 0) {
@@ -516,7 +494,6 @@ document.execCommand("copy");
 copyStatus.textContent = "✅ Текст скопирован!";
 });
 });
-// Запуск при загрузке
 renderCategories();
 renderCatalog();
 </script> </body> </html>
