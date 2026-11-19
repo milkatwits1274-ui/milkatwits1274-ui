@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лавка предметов — CatWar</title>
+    <style>
+        :root {
+            --bg-main: #1b2218;
+            --bg-card: #263022;
+            --bg-header: #131811;
+            --accent: #7da657;
+            --accent-hover: #8eb966;
+            --text-main: #eef2eb;
+            --text-muted: #a3b19c;
+            --border: #3a4734;
+            --danger: #c95b5b;
+            --warning: #d4a348;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Фильтры и поиск */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .filter-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--accent);
+            color: #131811;
+            font-weight: 600;
+            border-color: var(--accent);
+        }
+
+        /* Сетка товаров */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .item-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.15s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .item-img {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            background-color: #1d251a;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            padding: 8px;
+        }
+
+        .item-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 4px 0;
+        }
+
+        .item-stock {
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .in-stock { color: var(--accent); }
+        .out-stock { color: var(--danger); }
+
+        .item-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .item-price {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #e4d4a7;
+        }
+
+        .add-btn {
+            background-color: var(--accent);
+            color: #131811;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+        }
+
+        .add-btn:disabled {
+            background-color: #3a4734;
+            color: #778570;
+            cursor: not-allowed;
+        }
+
+        /* Корзина */
+        .cart-panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .cart-panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .cart-empty {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1d251a;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .cart-row-info {
+            flex: 1;
+            padding-right: 8px;
+        }
+
+        .cart-row-title {
+            font-weight: 600;
+        }
+
+        .cart-row-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .qty-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 12px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .order-box {
+            margin-top: 10px;
+        }
+
+        .order-box label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .order-textarea {
+            width: 100%;
+            height: 110px;
+            background-color: #131811;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 10px;
+            font-size: 0.85rem;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent);
+            color: #131811;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .copy-btn:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+        }
+
+        .copy-btn:disabled {
+            background-color: #3a4734;
+            color: #778570;
+            cursor: not-allowed;
+        }
+
+        .copy-status {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 8px;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🐾 Лавка предметов CatWar</h1>
+    <p>Выберите нужные предметы, соберите корзину и скопируйте готовый текст заказа</p>
+</header>
+
+<div class="container">
+    <!-- Левая колонка: Каталог -->
+    <main>
+        <div class="controls">
+            <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию...">
+            <div id="categoryFilters" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+        </div>
+        <div id="catalogGrid" class="catalog-grid"></div>
+    </main>
+
+    <!-- Правая колонка: Корзина -->
+    <aside class="cart-panel">
+        <h2>🛒 Ваша корзина</h2>
+        <div id="cartItems" class="cart-items">
+            <div class="cart-empty">Корзина пока пуста</div>
+        </div>
+
+        <div class="cart-total">
+            <span>Итого:</span>
+            <span id="totalPrice">0 кролей</span>
+        </div>
+
+        <div class="order-box">
+            <label for="orderText">Готовое сообщение для отправки:</label>
+            <textarea id="orderText" class="order-textarea" readonly placeholder="Добавьте товары, чтобы сформировать текст заказа..."></textarea>
+            <button id="copyBtn" class="copy-btn" disabled>Скопировать заказ</button>
+            <div id="copyStatus" class="copy-status"></div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    // ==========================================
+    // НАСТРОЙКА ТОВАРОВ (РЕДАКТИРУЙТЕ ЗДЕСЬ)
+    // ==========================================
+const CURRENCY = "кролей"; // Название валюты (например: кролей, мышей, монет)
+const ITEMS = [
+{
+id: 1,
+title: "Целебная ромашка",
+category: "Травы",
+price: 5,
+stock: 12,
+image: "images/chamomile.png"
+},
+{
+id: 2,
+title: "Паутина",
+category: "Травы",
+price: 3,
+stock: 8,
+image: "images/cobweb.png"
+},
+{
+id: 3,
+title: "Ветка можжевельника",
+category: "Травы",
+price: 10,
+stock: 0,
+image: "images/juniper.png"
+},
+{
+id: 4,
+title: "Перо сойки",
+category: "Украшения",
+price: 25,
+stock: 2,
+image: "images/feather.png"
+},
+{
+id: 5,
+title: "Клык лисы",
+category: "Редкости",
+price: 50,
+stock: 1,
+image: "images/fang.png"
+}
+];
+// ==========================================
+// ЛОГИКА МАГАЗИНА (ДАЛЬШЕ МОЖНО НЕ МЕНЯТЬ)
+// ==========================================
+let cart = {}; // { id: количество }
+let activeCategory = "Все";
+let searchQuery = "";
+const catalogGrid = document.getElementById("catalogGrid");
+const categoryFilters = document.getElementById("categoryFilters");
+const searchInput = document.getElementById("searchInput");
+const cartItemsEl = document.getElementById("cartItems");
+const totalPriceEl = document.getElementById("totalPrice");
+const orderTextEl = document.getElementById("orderText");
+const copyBtn = document.getElementById("copyBtn");
+const copyStatus = document.getElementById("copyStatus");
+// Создание кнопок категорий
+function renderCategories() {
+const categories = ["Все", ...new Set(ITEMS.map(item => item.category))];
+categoryFilters.innerHTML = "";
+categories.forEach(cat => {
+const btn = document.createElement("button");
+btn.className = "filter-btn" + (cat === activeCategory ? " active" : "");
+btn.textContent = cat;
+btn.onclick = () => {
+activeCategory = cat;
+renderCategories();
+renderCatalog();
+};
+categoryFilters.appendChild(btn);
+});
+}
+// Отрисовка каталога
+function renderCatalog() {
+catalogGrid.innerHTML = "";
+const filtered = ITEMS.filter(item => {
+const matchCat = activeCategory === "Все" || item.category === activeCategory;
+const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
+return matchCat && matchSearch;
+});
+filtered.forEach(item => {
+const inCart = cart[item.id] || 0;
+const available = item.stock - inCart;
+const card = document.createElement("div");
+card.className = "item-card";
+card.innerHTML = <div> <img src="${item.image}" alt="${item.title}" class="item-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://w3.org width=%22100%22 height=%22100%22><text x=%2250%%22 y=%2255%%22 font-size=%2240%22 text-anchor=%22middle%22>🐾</text></svg>'"> <div class="item-category">${item.category}</div> <div class="item-title">${item.title}</div> <div class="item-stock ${available > 0 ? 'in-stock' : 'out-stock'}"> ${available > 0 ?В наличии: ${available} шт.: 'Нет в наличии'} </div> </div> <div class="item-footer"> <span class="item-price">${item.price} ${CURRENCY}</span> <button class="add-btn" ${available <= 0 ? 'disabled' : ''} onclick="addToCart(${item.id})"> + В корзину </button> </div>;
+catalogGrid.appendChild(card);
+});
+}
+// Добавление в корзину
+window.addToCart = function(id) {
+const item = ITEMS.find(i => i.id === id);
+if (!item) return;
+const currentQty = cart[id] || 0;
+if (currentQty < item.stock) {
+cart[id] = currentQty + 1;
+updateAll();
+}
+};
+// Изменение количества в корзине
+window.changeQty = function(id, delta) {
+const item = ITEMS.find(i => i.id === id);
+if (!item) return;
+const newQty = (cart[id] || 0) + delta;
+if (newQty <= 0) {
+delete cart[id];
+} else if (newQty <= item.stock) {
+cart[id] = newQty;
+}
+updateAll();
+};
+// Отрисовка корзины и текста заказа
+function renderCart() {
+const entries = Object.entries(cart);
+if (entries.length === 0) {
+cartItemsEl.innerHTML = 'Корзина пока пуста';
+totalPriceEl.textContent = 0 ${CURRENCY};
+orderTextEl.value = "";
+copyBtn.disabled = true;
+return;
+}
+cartItemsEl.innerHTML = "";
+let total = 0;
+let orderLines = ["Привет! Хочу оформить заказ из лавки:"];
+entries.forEach(([idStr, qty]) => {
+const item = ITEMS.find(i => i.id === Number(idStr));
+if (!item) return;
+const sum = item.price * qty;
+total += sum;
+const row = document.createElement("div");
+row.className = "cart-row";
+row.innerHTML = <div class="cart-row-info"> <div class="cart-row-title">${item.title}</div> <div class="cart-row-sub">${item.price} × ${qty} = ${sum} ${CURRENCY}</div> </div> <div class="qty-controls"> <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button> <span>${qty}</span> <button class="qty-btn" onclick="changeQty(${item.id}, 1)" ${qty >= item.stock ? 'disabled' : ''}>+</button> </div>;
+cartItemsEl.appendChild(row);
+orderLines.push(• ${item.title} — ${qty} шт. (${sum} ${CURRENCY}));
+});
+orderLines.push(\nИтого: ${total} ${CURRENCY});
+totalPriceEl.textContent = ${total} ${CURRENCY};
+orderTextEl.value = orderLines.join("\n");
+copyBtn.disabled = false;
+}
+function updateAll() {
+renderCatalog();
+renderCart();
+copyStatus.textContent = "";
+}
+searchInput.addEventListener("input", (e) => {
+searchQuery = e.target.value;
+renderCatalog();
+});
+copyBtn.addEventListener("click", () => {
+navigator.clipboard.writeText(orderTextEl.value).then(() => {
+copyStatus.textContent = "✅ Текст заказа скопирован! Отправьте его мне.";
+}).catch(() => {
+orderTextEl.select();
+document.execCommand("copy");
+copyStatus.textContent = "✅ Текст скопирован!";
+});
+});
+// Запуск при загрузке
+renderCategories();
+renderCatalog();
