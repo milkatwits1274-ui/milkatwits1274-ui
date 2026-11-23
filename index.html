@@ -339,6 +339,51 @@
             margin-top: 8px;
             min-height: 20px;
         }
+                /* Плавающая кнопка корзины для телефона */
+        .mobile-cart-bar {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding-bottom: 85px;
+            }
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .item-card {
+                padding: 10px;
+            }
+            .item-img {
+                height: 85px;
+                margin-bottom: 8px;
+            }
+            .item-title {
+                font-size: 0.95rem;
+            }
+            .add-btn {
+                padding: 7px 8px;
+                font-size: 0.85rem;
+            }
+            .mobile-cart-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: fixed;
+                bottom: 12px;
+                left: 12px;
+                right: 12px;
+                background-color: var(--accent);
+                color: #131811;
+                padding: 12px 18px;
+                border-radius: 12px;
+                font-weight: 700;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+                z-index: 100;
+                cursor: pointer;
+            }
+        }
     </style>
 </head>
 <body>
@@ -376,7 +421,12 @@
         </div>
     </aside>
 </div>
+<div class="mobile-cart-bar" onclick="document.querySelector('.cart-panel').scrollIntoView({behavior: 'smooth'})">
+    <span>🛒 Корзина (<span id="mobileCount">0</span>)</span>
+    <span id="mobileTotal">0 кролей →</span>
+</div>
 
+    
 <script>
     const CURRENCY = "кролей";
 
