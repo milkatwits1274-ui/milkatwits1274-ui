@@ -1257,8 +1257,8 @@
         if (entries.length === 0) {
             cartItemsEl.innerHTML = '<div class="cart-empty">Корзина пока пуста</div>';
             orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
-orderLines.push(`Способ получения: ${deliverySelect.value}`);
-            totalPriceEl.textContent = `0 ${CURRENCY}`;
+orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
+        orderLines.push(`Способ получения: ${deliverySelect.value}`);
             orderTextEl.value = "";
             copyBtn.disabled = true;
             if (mCount) mCount.textContent = "0";
