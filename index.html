@@ -400,6 +400,103 @@
         .delivery-select:focus {
             border-color: var(--accent);
         }
+
+                .item-card {
+            position: relative;
+        }
+
+        .info-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            z-index: 2;
+        }
+
+        .info-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Всплывающее окно (модалка) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent);
+            border-radius: 14px;
+            padding: 20px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .modal-sub {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .drops-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .drop-img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            background-color: #1d251a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px;
+        }
     </style>
 </head>
 <body>
@@ -448,6 +545,14 @@
     <span id="mobileTotal">0 кролей →</span>
 </div>
 
+    <div id="infoModal" class="modal-overlay" onclick="if(event.target === this) closeInfo()">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeInfo()">×</button>
+        <div id="modalTitle" class="modal-title"></div>
+        <div class="modal-sub">Выпадающий предмет при использовании:</div>
+        <div id="modalDrops" class="drops-grid"></div>
+    </div>
+</div>
     
 <script>
     const CURRENCY = "кролей";
@@ -1205,7 +1310,7 @@
     const copyBtn = document.getElementById("copyBtn");
     const copyStatus = document.getElementById("copyStatus");
 
-         function renderCatalog() {
+            function renderCatalog() {
         catalogGrid.innerHTML = "";
         const filtered = ITEMS.filter(item =>
             item.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -1214,7 +1319,12 @@
         filtered.forEach(item => {
             const card = document.createElement("div");
             card.className = "item-card";
+            const infoButton = (item.drops && item.drops.length > 0)
+                ? `<button class="info-btn" onclick="openInfo(${item.id})" title="Что выпадает">?</button>`
+                : '';
+
             card.innerHTML = `
+                ${infoButton}
                 <div>
                     <img src="${item.image}" alt="${item.title}" class="item-img" onerror="this.style.opacity='0.3'">
                     <div class="item-title" style="margin-bottom: 12px;">${item.title}</div>
@@ -1228,6 +1338,22 @@
             `;
             catalogGrid.appendChild(card);
         });
+    }
+
+    window.openInfo = function(id) {
+        const item = ITEMS.find(i => i.id === id);
+        if (!item || !item.drops) return;
+        document.getElementById("modalTitle").textContent = item.title;
+        document.getElementById("modalDrops").innerHTML = item.drops
+            .map(src => `<img src="${src}" class="drop-img" alt="дроп">`)
+            .join("");
+        document.getElementById("infoModal").classList.add("active");
+    };
+
+    window.closeInfo = function() {
+        document.getElementById("infoModal").classList.remove("active");
+    };
+
     }
 
     window.addToCart = function(id) {
