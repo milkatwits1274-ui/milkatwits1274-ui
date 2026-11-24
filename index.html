@@ -384,6 +384,22 @@
                 cursor: pointer;
             }
         }
+                .delivery-select {
+            width: 100%;
+            padding: 9px 10px;
+            background-color: #131811;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .delivery-select:focus {
+            border-color: var(--accent);
+        }
     </style>
 </head>
 <body>
@@ -413,6 +429,12 @@
         </div>
 
         <div class="order-box">
+                        <label for="deliveryMethod">Способ получения:</label>
+            <select id="deliveryMethod" class="delivery-select">
+                <option value="Перепись">Перепись</option>
+                <option value="Встреча в Элизиуме">Встреча в Элизиуме</option>
+                <option value="Через редакт локации">Через редакт локации</option>
+            </select>
             <label for="orderText">Готовое сообщение для отправки:</label>
             <textarea id="orderText" class="order-textarea" readonly placeholder="Добавьте товары, чтобы сформировать текст заказа..."></textarea>
             <button id="copyBtn" class="copy-btn" disabled>Скопировать заказ</button>
@@ -1178,6 +1200,7 @@
     const searchInput = document.getElementById("searchInput");
     const cartItemsEl = document.getElementById("cartItems");
     const totalPriceEl = document.getElementById("totalPrice");
+    const deliverySelect = document.getElementById("deliveryMethod");
     const orderTextEl = document.getElementById("orderText");
     const copyBtn = document.getElementById("copyBtn");
     const copyStatus = document.getElementById("copyStatus");
@@ -1233,6 +1256,8 @@
 
         if (entries.length === 0) {
             cartItemsEl.innerHTML = '<div class="cart-empty">Корзина пока пуста</div>';
+            orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
+orderLines.push(`Способ получения: ${deliverySelect.value}`);
             totalPriceEl.textContent = `0 ${CURRENCY}`;
             orderTextEl.value = "";
             copyBtn.disabled = true;
@@ -1284,6 +1309,13 @@
         renderCart();
         copyStatus.textContent = "";
     }
+
+    deliverySelect.addEventListener("change", () => {
+    if (Object.keys(cart).length > 0) {
+        renderCart();
+        copyStatus.textContent = "";
+    }
+});
 
     searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value;
