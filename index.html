@@ -536,7 +536,7 @@
             <textarea id="orderText" class="order-textarea" readonly placeholder="Добавьте товары, чтобы сформировать текст заказа..."></textarea>
             <button id="copyBtn" class="copy-btn" disabled>Скопировать заказ</button>
             <div id="copyStatus" class="copy-status"></div>
-                <a href="https://catwar.su/cat1690309" target="_blank" class="profile-link" style="display: block; text-align: center; margin-top: 8px; color: #a3b19c;">Отправить ЛС в CatWar🐱↗</a>
+                <a href="https://catwar.su/cat1690309" target="_blank" class="profile-link" style="display: block; text-align: center; margin-top: 8px; color: #a3b19c;">Отправить ЛС в Catwar🐱↗</a>
         </div>
     </aside>
 </div>
@@ -1298,7 +1298,7 @@
         }
     ];
 
-    let cart = {};
+        let cart = JSON.parse(localStorage.getItem("catwar_cart")) || {};
     let searchQuery = "";
 
     const catalogGrid = document.getElementById("catalogGrid");
@@ -1429,6 +1429,7 @@
 
 
     function updateAll() {
+        localStorage.setItem("catwar_cart", JSON.stringify(cart));
         renderCatalog();
         renderCart();
         copyStatus.textContent = "";
@@ -1456,7 +1457,22 @@
         });
     });
 
+       // Восстанавливаем способ получения, если его меняли ранее
+    const savedDelivery = localStorage.getItem("catwar_delivery");
+    if (savedDelivery) {
+        deliverySelect.value = savedDelivery;
+    }
+
+    deliverySelect.addEventListener("change", () => {
+        localStorage.setItem("catwar_delivery", deliverySelect.value);
+        if (Object.keys(cart).length > 0) {
+            renderCart();
+            copyStatus.textContent = "";
+        }
+    });
+
     renderCatalog();
+    renderCart();
 </script>
 </body>
 </html>
