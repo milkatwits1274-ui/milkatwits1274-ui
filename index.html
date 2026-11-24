@@ -1249,16 +1249,14 @@
         updateAll();
     };
 
-     function renderCart() {
+         function renderCart() {
         const entries = Object.entries(cart);
         const mCount = document.getElementById("mobileCount");
         const mTotal = document.getElementById("mobileTotal");
 
         if (entries.length === 0) {
             cartItemsEl.innerHTML = '<div class="cart-empty">Корзина пока пуста</div>';
-            orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
-orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
-        orderLines.push(`Способ получения: ${deliverySelect.value}`);
+            totalPriceEl.textContent = `0 ${CURRENCY}`;
             orderTextEl.value = "";
             copyBtn.disabled = true;
             if (mCount) mCount.textContent = "0";
@@ -1296,6 +1294,7 @@ orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
         });
 
         orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
+        orderLines.push(`Способ получения: ${deliverySelect.value}`);
         totalPriceEl.textContent = `${total} ${CURRENCY}`;
         orderTextEl.value = orderLines.join("\n");
         copyBtn.disabled = false;
@@ -1303,6 +1302,7 @@ orderLines.push(`\nИтого: ${total} ${CURRENCY}`);
         if (mCount) mCount.textContent = totalQty;
         if (mTotal) mTotal.textContent = `${total} ${CURRENCY} →`;
     }
+
 
     function updateAll() {
         renderCatalog();
