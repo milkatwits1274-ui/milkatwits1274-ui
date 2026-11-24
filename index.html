@@ -497,6 +497,42 @@
             border-radius: 8px;
             padding: 6px;
         }
+                .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .clear-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .clear-btn:hover:not(:disabled) {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .clear-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body>
@@ -515,7 +551,10 @@
     </main>
 
     <aside class="cart-panel">
-        <h2>🛒 Ваша корзина</h2>
+                <div class="cart-header">
+            <h2>🛒 Ваша корзина</h2>
+            <button id="clearCartBtn" class="clear-btn" onclick="clearCart()" disabled>Очистить</button>
+        </div>
         <div id="cartItems" class="cart-items">
             <div class="cart-empty">Корзина пока пуста</div>
         </div>
@@ -689,6 +728,7 @@
             title: "Добрый кот-перевертыш",
             price: 30,
             image: "images/18590.png"
+            drops: ["images/18591.png"]
         },
            {
             id: 23,
@@ -887,6 +927,7 @@
             title: "Киндер-сюрприз",
             price: 20,
             image: "images/14404.png"
+            drops: ["images/14405.png", "images/14406.png", "images/14407.png", "images/14408.png"]
         },
            {
             id: 56,
@@ -917,6 +958,7 @@
             title: "Коробка с бургером",
             price: 20,
             image: "images/14642.png"
+            drops: ["images/14645-1.png"]
         },
         {
             id: 61,
@@ -959,6 +1001,7 @@
             title: "Слепая коробка",
             price: 25,
             image: "images/15516.png"
+            drops: ["images/15517.png", "images/15518.png", "images/15519.png"]
         },
            {
             id: 68,
@@ -1037,6 +1080,7 @@
             title: "Дальгона",
             price: 25,
             image: "images/15890.png"
+            drops: ["images/15891.png", "images/15892.png"]
         },
         {
             id: 81,
@@ -1259,6 +1303,7 @@
             title: "Загадочная шкатулка",
             price: 20,
             image: "images/16501.png"
+            drops: ["images/16502.png", "images/16503.png", "images/16504.png", "images/16505.png", "images/16506.png", "images/16507.png", "images/16508.png", "images/16509.png", "images/16510.png", "images/16511.png", "images/16512.png", "images/16513.png", "images/16514.png"]
         },
         {
             id: 118,
@@ -1372,6 +1417,10 @@
         }
         updateAll();
     };
+        window.clearCart = function() {
+        cart = {};
+        updateAll();
+    };
 
          function renderCart() {
         const entries = Object.entries(cart);
@@ -1382,6 +1431,7 @@
             cartItemsEl.innerHTML = '<div class="cart-empty">Корзина пока пуста</div>';
             totalPriceEl.textContent = `0 ${CURRENCY}`;
             orderTextEl.value = "";
+            document.getElementById("clearCartBtn").disabled = true;
             copyBtn.disabled = true;
             if (mCount) mCount.textContent = "0";
             if (mTotal) mTotal.textContent = `0 ${CURRENCY} →`;
@@ -1422,6 +1472,7 @@
         totalPriceEl.textContent = `${total} ${CURRENCY}`;
         orderTextEl.value = orderLines.join("\n");
         copyBtn.disabled = false;
+        document.getElementById("clearCartBtn").disabled = false;
 
         if (mCount) mCount.textContent = totalQty;
         if (mTotal) mTotal.textContent = `${total} ${CURRENCY} →`;
